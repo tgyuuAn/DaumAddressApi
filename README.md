@@ -12,4 +12,79 @@
 
 <br><br><br>
 
-**WebView**를 사용할 때 url을`tgyuuan.github.io/DaumAddressApi`로 설정하고 사용하면 된다.
+**WebView**를 사용할 때 url을`https://tgyuuan.github.io/DaumAddressApi`로 설정하고 사용하면 된다.
+
+```kotlin
+@AndroidEntryPoint
+class PostCodeFragment : DialogFragment() {
+
+    private var _binding: FragmentPostCodeBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPostCodeBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this.viewLifecycleOwner
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupWebView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView() {
+        binding.postcodeWV.apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.useWideViewPort = true
+            settings.loadWithOverviewMode = true
+            settings.cacheMode = WebSettings.LOAD_NO_CACHE
+
+            webViewClient = WebViewClient()
+            webChromeClient = WebChromeClient()
+
+            addJavascriptInterface(AndroidBridge(), "android")
+            loadUrl("https://tgyuuan.github.io/DaumAddressApi")
+        }
+    }
+
+    private inner class AndroidBridge {
+        @JavascriptInterface
+        fun onPostCodeReceived(roadNameAddress: String, lotNumberAddress: String) {
+            
+            // 여기서 받아온 데이터를 핸들링 할 코드를 작성
+
+            dismiss()
+        }
+    }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PostCodeFragment">
+
+        <WebView
+            android:id="@+id/postcode_WV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp" />
+    </FrameLayout>
+</layout>
+```
