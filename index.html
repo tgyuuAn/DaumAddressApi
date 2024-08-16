@@ -12,10 +12,12 @@
         new daum.Postcode({
             oncomplete: function(data) {
                 var lotNumberAddress = data.jibunAddress; // 지번 주소 변수
+                var autoLotNumberAddress = data.autoJibunAddress;
                 var roadNameAddress = data.roadAddress; // 도로명 주소
-
+                var autoRoadNameAddress = data.autoRoadAddress;
+                
                 // 도로명 주소와 지번 주소를 안드로이드 네이티브로 전송
-                window.android.onPostCodeReceived(roadNameAddress, lotNumberAddress);
+                window.android.onPostCodeReceived(roadNameAddress, autoRoadNameAddress, lotNumberAddress, autoLotNumberAddress);
             },
             width : '100%',
             height : '100%'
